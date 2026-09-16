@@ -10,6 +10,26 @@ contextBridge.exposeInMainWorld('todo', {
   agent: (text: string) => ipcRenderer.invoke('agent:run', text),
   setOpacity: (v: number) => ipcRenderer.invoke('win:setOpacity', v),
   hide: () => ipcRenderer.invoke('win:hide'),
-  toggleClickThrough: (on: boolean) => ipcRenderer.invoke('win:toggleClickThrough', on),
-  toggleAlwaysOnTop: () => ipcRenderer.invoke('win:toggleAlwaysOnTop')
+  minimize: () => ipcRenderer.invoke('win:minimize'),
+  toggleAlwaysOnTop: () => ipcRenderer.invoke('win:toggleAlwaysOnTop'),
+  // ---- 설정/로그인 ----
+  settings: () => ipcRenderer.invoke('settings:get'),
+  saveSettings: (input: Record<string, unknown>) => ipcRenderer.invoke('settings:save', input),
+  clearLlmKey: () => ipcRenderer.invoke('settings:clear-key'),
+  testLlm: (draft: Record<string, unknown>) => ipcRenderer.invoke('llm:test', draft),
+  authStatus: () => ipcRenderer.invoke('auth:status'),
+  loginInteractive: () => ipcRenderer.invoke('auth:login-interactive'),
+  loginDevice: () => ipcRenderer.invoke('auth:login-device'),
+  logout: () => ipcRenderer.invoke('auth:logout'),
+  copyText: (text: string) => ipcRenderer.invoke('clipboard:write', text),
+  onAuthEvent: (cb: (kind: 'changed' | 'device-code', payload: unknown) => void) => {
+    const changed = (_e: unknown, payload: unknown) => cb('changed', payload);
+    const code = (_e: unknown, payload: unknown) => cb('device-code', payload);
+    ipcRenderer.on('auth:changed', changed);
+    ipcRenderer.on('auth:device-code', code);
+    return () => {
+      ipcRenderer.removeListener('auth:changed', changed);
+      ipcRenderer.removeListener('auth:device-code', code);
+    };
+  }
 });

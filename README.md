@@ -39,27 +39,26 @@ npm run dist:linux  # Linux: dist/*.AppImage, *.deb
 
 단축키: `Ctrl+Shift+T` 숨기기/보이기.
 
-## 2. Microsoft To Do 연결
+## 2. Microsoft To Do 연결 — UI에서 로그인
 
-1. https://entra.microsoft.com → **App registrations** → New registration
-   - Supported account types: 개인 계정이면 `Personal Microsoft accounts only`
-   - Redirect URI: 필요 없음 (Device Code Flow)
-2. **API permissions** → Add → `Tasks.ReadWrite` (Delegated) + `offline_access` → Grant admin consent(개인 계정은 생략 가능)
-3. **Overview**에서 Application (client) ID 복사
-4. `.env` 설정:
+`.env` 없이 앱 내 **⚙ 설정 → Microsoft To Do**에서 전부 됩니다.
 
-```ini
-TODO_BACKEND=mstodo
-AZURE_CLIENT_ID=복사한ID
-AZURE_TENANT_ID=consumers   # 개인: consumers / 회사: organizations / 둘다: common
-```
+1. 백엔드를 `Microsoft To Do`로 바꾸고 **Client ID** 입력
+   (Entra → App registrations → New registration, 권한 `Tasks.ReadWrite` + `offline_access`)
+2. **저장 후 적용** → **브라우저로 로그인** (기본 브라우저가 열림)
+   - 회사망/loopback이 막히면 **코드로 로그인**: 표시된 코드를 `microsoft.com/devicelogin`에 입력
+3. 상태 표시줄에 계정이 뜨면 완료. 이후 토큰은 OS 앱 데이터 경로에 자동 갱신 저장.
 
-5. `npm run dev` → 터미널에 `https://microsoft.com/devicelogin` + 코드 출력 → 브라우저에서 1회 로그인.
-   이후 토큰은 `msal-cache.json`에 캐시되어 자동 갱신됩니다. (이 파일은 절대 커밋하지 마세요.)
+CLI/수동 설정을 선호하면 `.env`도 그대로 지원 (`TODO_BACKEND`, `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`).
 
 ## 3. LLM 연결
 
-### 3-1. 앱 안에서 (Ollama 예시 — 무료/로컬)
+### 3-1. 앱 안에서 (⚙ 설정 → AI)
+
+공급자 선택 → Base URL/모델 입력 → API 키 입력 → **연결 테스트** → **저장 후 적용**.
+API 키는 OS 키체인(DPAPI 등)으로 암호화 저장되며, 연결 테스트 외에는 본문이 외부로 나가지 않습니다.
+
+Ollama 예시 (무료/로컬): 공급자 `Ollama`, Base URL `http://localhost:11434/v1`, 모델 `llama3.1`, 키 비워둠.
 
 ```ini
 LLM_PROVIDER=ollama
@@ -117,6 +116,7 @@ Claude Desktop `claude_desktop_config.json`:
 
 ```bash
 npm run agent:demo -- "보고서 끝냈어"
+npm run smoke   # 빌드된 앱을 띄워 IPC 전체를 CDP로 end-to-end 검증
 ```
 
 ## 5. 문제 해결
@@ -128,6 +128,7 @@ npm run agent:demo -- "보고서 끝냈어"
 | Linux에서 창이 뒤로 감 | 사용 중인 WM 확인. `setVisibleOnAllWorkspaces` 적용済, 타일링 WM은 floating 규칙에 앱 추가 |
 | Ollama 연결 실패 | `ollama serve` 실행 중인지, `LLM_BASE_URL` 오타 확인 |
 | 원격데스크톱/VM에서 빈 화면 | 렌더러 GPU 크래시 시 `--disable-gpu`로 자동 재시작됨. 그래도 안 되면 수동 실행: `npx electron out/main/index.js --disable-gpu` |
+| 최소화하면 사라짐 | 타이틀바 `—`는 최소화(작업표시줄 유지). 완전히 숨기려면 트레이 아이콘 우클릭 → 보이기/숨기기, `Ctrl+Shift+T`로 복귀 |
 
 ## 6. 보안
 

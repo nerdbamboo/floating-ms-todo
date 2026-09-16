@@ -16,6 +16,7 @@
     "mcp": "tsx src/mcp/server.ts",
     "agent:demo": "tsx src/agent/demo.ts",
     "sec": "node scripts/check-security.mjs",
+    "smoke": "node scripts/cdp-smoke.mjs",
     "dist:win": "npm run build && electron-builder --win",
     "dist:linux": "npm run build && electron-builder --linux",
     "postinstall": "electron-builder install-app-deps || true"
@@ -29,14 +30,16 @@
     "@types/node": "^22.10.2",
     "@types/react": "^19.0.2",
     "@types/react-dom": "^19.0.2",
+    "@types/ws": "^8.18.1",
     "@vitejs/plugin-react": "^4.3.4",
     "electron": "^33.2.1",
     "electron-builder": "^25.1.8",
     "electron-vite": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "tsx": "^4.19.2",
     "typescript": "^5.7.2",
     "vite": "^6.0.6",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "ws": "^8.21.3"
   }
 }

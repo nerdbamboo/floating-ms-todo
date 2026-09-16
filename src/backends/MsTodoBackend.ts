@@ -76,7 +76,109 @@ export class MsTodoBackend implements TodoBackend {
     this.defaultListName = opts?.defaultList ?? process.env.TODO_DEFAULT_LIST ?? 'Tasks';
   }
 
-  // ---- auth ----
+  // ---- auth (UI 로그인용 공개 API) ----
+
+  /** 저장된 캐시만 보고 로그인 여부 확인 — 네트워크 호출 없음 */
+  async getAccountInfo(): Promise<{ username: string } | null> {
+    try {
+      const { readFile } = await import('node:fs/promises');
+      const raw = await readFile(this.tokenCachePath, 'utf-8').catch(() => null);
+      if (!raw) return null;
+      this.pca.getTokenCache().deserialize(raw);
+      const accounts = await this.pca.getTokenCache().getAllAccounts();
+      if (accounts.length === 0) return null;
+      return { username: accounts[0].username };
+    } catch {
+      return null;
+    }
+  }
+
+  /**
+   * 브라우저 로그인 (Auth Code + loopback).
+   * openBrowser를 넘기면 그걸로, 없으면 msal 내장 방식(기본 브라우저)으로 엽니다.
+   * Electron main에서는 shell.openExternal을 넘겨주세요.
+   */
+  async loginInteractive(openBrowser?: (url: string) => Promise<void>): Promise<{ username: string }> {
+    let opener = openBrowser;
+    if (!opener) {
+      try {
+        const mod = (await import('electron')) as unknown as {
+          shell?: { openExternal?: (url: string) => Promise<void> };
+        };
+        if (mod.shell?.openExternal) {
+          const openExternal = mod.shell.openExternal.bind(mod.shell);
+          opener = (url: string) => openExternal(url);
+        }
+      } catch {
+        /* plain node에서는 아래 에러로 안내 */
+      }
+    }
+    if (!opener) {
+      throw new Error('[MsTodoBackend] 브라우저 열기가 지원되지 않는 환경입니다. Electron 앱에서 실행하거나 device code 로그인을 사용하세요.');
+    }
+    const result = await this.pca
+      .acquireTokenInteractive({
+        scopes: SCOPES,
+        openBrowser: opener,
+        successTemplate: '<h1>로그인 완료</h1><p>Floating To Do로 돌아가세요. 이 창은 닫아도 됩니다.</p>'
+      })
+      .catch((e) => {
+        throw new Error(`[MsTodoBackend] 브라우저 로그인 실패: ${String(e?.message ?? e)}`);
+      });
+    await this.persistCache();
+    return { username: result.account?.username ?? '' };
+  }
+
+  /**
+   * Device Code 로그인 — onCode로 { userCode, verificationUri, message }를
+   * UI에 전달하고, 사용자가 브라우저에서 입력할 때까지 대기합니다.
+   */
+  async loginDeviceCode(
+    onCode: (info: { userCode: string; verificationUri: string; message: string }) => void
+  ): Promise<{ username: string }> {
+    const result = await this.pca
+      .acquireTokenByDeviceCode({
+        scopes: SCOPES,
+        deviceCodeCallback: (res) => {
+          console.log(`\n[MS 로그인] ${res.message}\n`);
+          onCode({ userCode: res.userCode, verificationUri: res.verificationUri, message: res.message });
+        }
+      })
+      .catch((e) => {
+        throw new Error(`[MsTodoBackend] 디바이스 로그인 실패: ${String(e?.message ?? e)}`);
+      });
+    if (!result) throw new Error('[MsTodoBackend] 토큰 획득 실패');
+    await this.persistCache();
+    return { username: result.account?.username ?? '' };
+  }
+
+  /** 캐시 + 파일 삭제 */
+  async logout(): Promise<void> {
+    try {
+      const { readFile, unlink } = await import('node:fs/promises');
+      const raw = await readFile(this.tokenCachePath, 'utf-8').catch(() => null);
+      if (raw) {
+        this.pca.getTokenCache().deserialize(raw);
+        const accounts = await this.pca.getTokenCache().getAllAccounts().catch(() => []);
+        for (const a of accounts) {
+          await this.pca.getTokenCache().removeAccount(a).catch(() => undefined);
+        }
+      }
+      await unlink(this.tokenCachePath).catch(() => undefined);
+    } catch {
+      /* 로그아웃은 항상 성공扱い */
+    }
+  }
+
+  private async persistCache(): Promise<void> {
+    try {
+      const { writeFile } = await import('node:fs/promises');
+      // 토큰 캐시는 타인이 읽지 못하게 0o600 (POSIX). Windows에서는 ACL 상속.
+      await writeFile(this.tokenCachePath, this.pca.getTokenCache().serialize(), { encoding: 'utf-8', mode: 0o600 });
+    } catch {
+      /* 캐시 저장 실패는 치명적이지 않음 */
+    }
+  }
 
   private async getToken(): Promise<string> {
     // 1) 캐시된 계정으로 silent 획득 시도
@@ -109,13 +211,7 @@ export class MsTodoBackend implements TodoBackend {
     });
     const token = device?.accessToken;
     if (!token) throw new Error('[MsTodoBackend] 토큰 획득 실패');
-    try {
-      const { writeFile } = await import('node:fs/promises');
-      // 토큰 캐시는 타인이 읽지 못하게 0o600 (POSIX). Windows에서는 ACL 상속.
-      await writeFile(this.tokenCachePath, this.pca.getTokenCache().serialize(), { encoding: 'utf-8', mode: 0o600 });
-    } catch {
-      /* 캐시 저장 실패는 치명적이지 않음 */
-    }
+    await this.persistCache();
     return token;
   }
 

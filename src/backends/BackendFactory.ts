@@ -27,3 +27,8 @@ export function getBackend(): TodoBackend {
 export function setBackend(b: TodoBackend): void {
   singleton = b;
 }
+
+/** 설정 변경 시 싱글톤 파기 → 다음 getBackend()에서 재생성 (또는 setBackend로 교체) */
+export function resetBackend(): void {
+  singleton = null;
+}

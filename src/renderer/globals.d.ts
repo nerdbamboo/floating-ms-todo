@@ -7,8 +7,41 @@ interface TodoBridge {
   agent: (text: string) => Promise<{ reply: string; tasks: RendererTask[] }>;
   setOpacity: (v: number) => Promise<void>;
   hide: () => Promise<void>;
-  toggleClickThrough: (on: boolean) => Promise<void>;
+  minimize: () => Promise<void>;
   toggleAlwaysOnTop: () => Promise<boolean>;
+  settings: () => Promise<SettingsDTO>;
+  saveSettings: (input: Record<string, unknown>) => Promise<SettingsDTO>;
+  clearLlmKey: () => Promise<SettingsDTO>;
+  testLlm: (draft: Record<string, unknown>) => Promise<{ ok: boolean; reply?: string; error?: string; provider?: string }>;
+  authStatus: () => Promise<AuthStatus>;
+  loginInteractive: () => Promise<{ username: string }>;
+  loginDevice: () => Promise<DeviceCodeInfo>;
+  logout: () => Promise<{ ok: boolean }>;
+  copyText: (text: string) => Promise<void>;
+  onAuthEvent: (cb: (kind: 'changed' | 'device-code', payload: unknown) => void) => () => void;
+}
+
+interface SettingsDTO {
+  todoBackend: 'memory' | 'mstodo';
+  azureClientId: string;
+  azureTenantId: string;
+  llmProvider: string;
+  llmBaseUrl: string;
+  llmModel: string;
+  hasLlmKey: boolean;
+  keyProtection: 'os-keychain' | 'plain' | 'none';
+}
+
+interface AuthStatus {
+  backend: string;
+  loggedIn: boolean;
+  username: string | null;
+}
+
+interface DeviceCodeInfo {
+  userCode: string;
+  verificationUri: string;
+  message: string;
 }
 
 interface RendererTask {

@@ -18,6 +18,29 @@ export type IpcChannels = {
   'agent:run': (text: string) => Promise<{ reply: string; tasks: RendererTask[] }>;
   'win:toggleClickThrough': (on: boolean) => Promise<void>;
   'win:hide': () => Promise<void>;
-  'win:setOpacity': (v: number) => Promise<void>;
+  'win:minimize': () => Promise<void>;
   'win:toggleAlwaysOnTop': () => Promise<boolean>;
 };
+
+export interface SettingsDTO {
+  todoBackend: 'memory' | 'mstodo';
+  azureClientId: string;
+  azureTenantId: string;
+  llmProvider: string;
+  llmBaseUrl: string;
+  llmModel: string;
+  hasLlmKey: boolean;
+  keyProtection: 'os-keychain' | 'plain' | 'none';
+}
+
+export interface AuthStatus {
+  backend: string;
+  loggedIn: boolean;
+  username: string | null;
+}
+
+export interface DeviceCodeInfo {
+  userCode: string;
+  verificationUri: string;
+  message: string;
+}

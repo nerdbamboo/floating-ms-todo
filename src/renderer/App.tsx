@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from 'react';
+import { SettingsPanel } from './SettingsPanel';
 
 interface Task {
   id: string;
@@ -17,6 +18,7 @@ export function App() {
   const [reply, setReply] = useState('자연어로 입력해보세요. 예: "내일 보고서 추가해줘"');
   const [opacity, setOpacity] = useState(0.95);
   const [busy, setBusy] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
 
   const refresh = useCallback(async () => {
     const b = bridge();
@@ -75,7 +77,7 @@ export function App() {
   };
 
   const openMsLoginHint = () => {
-    setReply('MS To Do 연결: .env에서 TODO_BACKEND=mstodo + AZURE_CLIENT_ID 설정 후 재시작. 첫 실행 시 터미널에 device login 코드가 뜹니다.');
+    setShowSettings(true);
   };
 
   return (
@@ -84,10 +86,14 @@ export function App() {
         <span>☁️ Floating To Do</span>
         <div className="btns">
           <button title="MS 연결 안내" onClick={openMsLoginHint}>⚙</button>
-          <button title="숨기기 (Ctrl+Shift+T)" onClick={() => bridge()?.hide()}>—</button>
+          <button title="최소화 (작업표시줄에 유지)" onClick={() => bridge()?.minimize()}>—</button>
         </div>
       </div>
       <div className="body">
+        {showSettings ? (
+          <SettingsPanel onClose={() => setShowSettings(false)} onSaved={() => refresh()} />
+        ) : (
+        <>
         <div className="agent-row">
           <input
             value={agentInput}
@@ -129,6 +135,8 @@ export function App() {
           />
           <button onClick={() => refresh()} style={{ cursor: 'pointer' }}>↻</button>
         </div>
+        </>
+        )}
       </div>
     </div>
   );
