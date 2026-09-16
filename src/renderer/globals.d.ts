@@ -6,6 +6,7 @@ interface TodoBridge {
   remove: (id: string) => Promise<void>;
   agent: (text: string) => Promise<{ reply: string; tasks: RendererTask[] }>;
   setOpacity: (v: number) => Promise<void>;
+  hide: () => Promise<void>;
   toggleClickThrough: (on: boolean) => Promise<void>;
   toggleAlwaysOnTop: () => Promise<boolean>;
 }

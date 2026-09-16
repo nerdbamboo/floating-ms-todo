@@ -15,6 +15,7 @@
     "lint": "eslint src --ext .ts,.tsx || true",
     "mcp": "tsx src/mcp/server.ts",
     "agent:demo": "tsx src/agent/demo.ts",
+    "sec": "node scripts/check-security.mjs",
     "dist:win": "npm run build && electron-builder --win",
     "dist:linux": "npm run build && electron-builder --linux",
     "postinstall": "electron-builder install-app-deps || true"
@@ -22,7 +23,6 @@
   "dependencies": {
     "@azure/msal-node": "^3.6.2",
     "dotenv": "^16.4.7",
-    "electron-store": "^10.0.1",
     "openai": "^4.83.0"
   },
   "devDependencies": {

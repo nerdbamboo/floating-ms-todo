@@ -111,7 +111,8 @@ export class MsTodoBackend implements TodoBackend {
     if (!token) throw new Error('[MsTodoBackend] 토큰 획득 실패');
     try {
       const { writeFile } = await import('node:fs/promises');
-      await writeFile(this.tokenCachePath, this.pca.getTokenCache().serialize(), 'utf-8');
+      // 토큰 캐시는 타인이 읽지 못하게 0o600 (POSIX). Windows에서는 ACL 상속.
+      await writeFile(this.tokenCachePath, this.pca.getTokenCache().serialize(), { encoding: 'utf-8', mode: 0o600 });
     } catch {
       /* 캐시 저장 실패는 치명적이지 않음 */
     }

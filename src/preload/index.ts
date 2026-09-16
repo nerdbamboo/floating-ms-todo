@@ -9,6 +9,7 @@ contextBridge.exposeInMainWorld('todo', {
   remove: (id: string) => ipcRenderer.invoke('todo:delete', id),
   agent: (text: string) => ipcRenderer.invoke('agent:run', text),
   setOpacity: (v: number) => ipcRenderer.invoke('win:setOpacity', v),
+  hide: () => ipcRenderer.invoke('win:hide'),
   toggleClickThrough: (on: boolean) => ipcRenderer.invoke('win:toggleClickThrough', on),
   toggleAlwaysOnTop: () => ipcRenderer.invoke('win:toggleAlwaysOnTop')
 });

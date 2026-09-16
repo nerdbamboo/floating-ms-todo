@@ -127,6 +127,14 @@ npm run agent:demo -- "보고서 끝냈어"
 | Device login 후 401 | Entra API 권한 `Tasks.ReadWrite` 확인, 테넌트 ID가 `consumers`인지 확인 (개인 계정) |
 | Linux에서 창이 뒤로 감 | 사용 중인 WM 확인. `setVisibleOnAllWorkspaces` 적용済, 타일링 WM은 floating 규칙에 앱 추가 |
 | Ollama 연결 실패 | `ollama serve` 실행 중인지, `LLM_BASE_URL` 오타 확인 |
+| 원격데스크톱/VM에서 빈 화면 | 렌더러 GPU 크래시 시 `--disable-gpu`로 자동 재시작됨. 그래도 안 되면 수동 실행: `npx electron out/main/index.js --disable-gpu` |
+
+## 6. 보안
+
+- `npm run sec` — 정적 보안 점검 (하드코딩 시크릿, .env/토큰커밋 여부, CSP, webPreferences, ESM/CJS 크래시 재발 방지)
+- MS 토큰 캐시(`msal-cache.json`)와 설정 저장소는 OS 앱 데이터 경로에 0600 권한으로 저장, `.gitignore`로 커밋 차단
+- renderer는 `contextIsolation: true` + `nodeIntegration: false` + CSP, main 프로세스에서 모든 IPC 입력 길이/형식 검증
+- 알려진 이슈: `npm audit`에서 `@azure/msal-node → uuid` moderate 2건. 수정에 msal-node 메이저 업그레이드(v6)가 필요해 보류 중. MS 로그인에만 영향, 로컬 모드와 무관.
 
 ## 라이선스
 

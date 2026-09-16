@@ -17,6 +17,7 @@ export type IpcChannels = {
   'todo:delete': (id: string) => Promise<void>;
   'agent:run': (text: string) => Promise<{ reply: string; tasks: RendererTask[] }>;
   'win:toggleClickThrough': (on: boolean) => Promise<void>;
+  'win:hide': () => Promise<void>;
   'win:setOpacity': (v: number) => Promise<void>;
   'win:toggleAlwaysOnTop': () => Promise<boolean>;
 };

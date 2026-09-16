@@ -84,7 +84,7 @@ export function App() {
         <span>☁️ Floating To Do</span>
         <div className="btns">
           <button title="MS 연결 안내" onClick={openMsLoginHint}>⚙</button>
-          <button title="숨기기 (Ctrl+Shift+T)" onClick={() => window.close()}>—</button>
+          <button title="숨기기 (Ctrl+Shift+T)" onClick={() => bridge()?.hide()}>—</button>
         </div>
       </div>
       <div className="body">
