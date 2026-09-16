@@ -17,6 +17,8 @@ linux:
     - AppImage
     - deb
   category: Utility
+  maintainer: stevenCho <34876337+nerdbamboo@users.noreply.github.com>
+  description: MS To Do floating app for Windows/Linux with LLM-friendly design
 nsis:
   oneClick: false
   allowToChangeInstallationDirectory: true
