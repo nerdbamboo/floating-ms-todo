@@ -66,7 +66,8 @@ const checks = [
   ['testLlm(mock) 성공', `await window.todo.testLlm({provider:'mock'})`],
   ['saveSettings 라운드트립', `await window.todo.saveSettings({llmProvider:'mock', llmModel:'llama3.1'})`],
   ['todo CRUD', `await window.todo.add({title:'smoke-' + Date.now()}).then(t => window.todo.complete(t.id).then(() => window.todo.remove(t.id)).then(() => 'crud-ok'))`],
-  ['agent(mock) 동작', `await window.todo.agent('스모크 테스트').then(r => typeof r.reply === 'string' ? 'agent-ok' : 'agent-bad')`]
+  ['agent(mock) 동작', `await window.todo.agent('스모크 테스트').then(r => typeof r.reply === 'string' ? 'agent-ok' : 'agent-bad')`],
+  ['미니바 접기/펼치기', `await window.todo.collapse().then(() => window.todo.expand()).then(() => 'mini-ok')`]
 ];
 
 async function main() {

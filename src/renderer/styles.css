@@ -82,3 +82,23 @@ body {
 .settings .bigcode { font-size: 20px; font-weight: 700; letter-spacing: 2px; display: flex; align-items: center; gap: 8px; }
 .settings .bigcode button { font-size: 12px; padding: 4px 8px; border-radius: 6px; border: 1px solid #cbd5e1; background: white; cursor: pointer; }
 .settings .hint { font-size: 11px; color: #94a3b8; }
+/* ---- 미니바 ---- */
+.mini-bar {
+  height: 44px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0 8px 0 10px;
+  background: linear-gradient(135deg, rgba(37,99,235,.94), rgba(124,58,237,.94));
+  color: white;
+  border-radius: 12px;
+  font-size: 13px;
+  cursor: pointer;
+  -webkit-app-region: drag;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+  white-space: nowrap;
+  overflow: hidden;
+}
+.mini-count { font-weight: 700; }
+.mini-next { flex: 1; opacity: .9; overflow: hidden; text-overflow: ellipsis; }
+.mini-x { -webkit-app-region: no-drag; border: none; background: rgba(255,255,255,.2); color: white; border-radius: 6px; width: 22px; height: 22px; cursor: pointer; }

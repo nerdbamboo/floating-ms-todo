@@ -19,6 +19,8 @@ export type IpcChannels = {
   'win:toggleClickThrough': (on: boolean) => Promise<void>;
   'win:hide': () => Promise<void>;
   'win:minimize': () => Promise<void>;
+  'win:collapse': () => Promise<void>;
+  'win:expand': () => Promise<void>;
   'win:toggleAlwaysOnTop': () => Promise<boolean>;
 };
 

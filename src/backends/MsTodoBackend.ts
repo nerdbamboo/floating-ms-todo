@@ -140,7 +140,8 @@ export class MsTodoBackend implements TodoBackend {
       .acquireTokenByDeviceCode({
         scopes: SCOPES,
         deviceCodeCallback: (res) => {
-          console.log(`\n[MS 로그인] ${res.message}\n`);
+          // 콘솔 한글 깨짐(Win cp949) 방지용 영어 로그. UI에는 한글로 표시됨.
+          console.log(`\n[MS sign-in] ${res.message}\n`);
           onCode({ userCode: res.userCode, verificationUri: res.verificationUri, message: res.message });
         }
       })
@@ -204,7 +205,7 @@ export class MsTodoBackend implements TodoBackend {
     const device = await this.pca.acquireTokenByDeviceCode({
       scopes: SCOPES,
       deviceCodeCallback: (res) => {
-        console.log(`\n[MS 로그인] ${res.message}\n`);
+          console.log(`\n[MS sign-in] ${res.message}\n`);
       }
     }).catch((e) => {
       throw new Error(`[MsTodoBackend] 디바이스 로그인 실패: ${String(e?.message ?? e)}`);

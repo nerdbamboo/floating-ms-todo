@@ -47,6 +47,7 @@ npm run dist:linux  # Linux: dist/*.AppImage, *.deb
    (Entra → App registrations → New registration, 권한 `Tasks.ReadWrite` + `offline_access`)
 2. **저장 후 적용** → **브라우저로 로그인** (기본 브라우저가 열림)
    - 회사망/loopback이 막히면 **코드로 로그인**: 표시된 코드를 `microsoft.com/devicelogin`에 입력
+   - 참고: 로그인 버튼을 누르면 현재 입력값이 자동 저장됩니다. Client ID 없이 누르면 안내 메시지가 뜹니다.
 3. 상태 표시줄에 계정이 뜨면 완료. 이후 토큰은 OS 앱 데이터 경로에 자동 갱신 저장.
 
 CLI/수동 설정을 선호하면 `.env`도 그대로 지원 (`TODO_BACKEND`, `AZURE_CLIENT_ID`, `AZURE_TENANT_ID`).
@@ -128,7 +129,7 @@ npm run smoke   # 빌드된 앱을 띄워 IPC 전체를 CDP로 end-to-end 검증
 | Linux에서 창이 뒤로 감 | 사용 중인 WM 확인. `setVisibleOnAllWorkspaces` 적용済, 타일링 WM은 floating 규칙에 앱 추가 |
 | Ollama 연결 실패 | `ollama serve` 실행 중인지, `LLM_BASE_URL` 오타 확인 |
 | 원격데스크톱/VM에서 빈 화면 | 렌더러 GPU 크래시 시 `--disable-gpu`로 자동 재시작됨. 그래도 안 되면 수동 실행: `npx electron out/main/index.js --disable-gpu` |
-| 최소화하면 사라짐 | 타이틀바 `—`는 최소화(작업표시줄 유지). 완전히 숨기려면 트레이 아이콘 우클릭 → 보이기/숨기기, `Ctrl+Shift+T`로 복귀 |
+| 최소화하면 사라짐 | 타이틀바 `—`는 **미니바로 접기**(미완료 개수+다음 할 일 표시, 클릭하면 펼침). 완전히 숨기려면 트레이 아이콘 우클릭 → 보이기/숨기기, `Ctrl+Shift+T`로 복귀 |
 
 ## 6. 보안
 

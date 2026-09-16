@@ -8,6 +8,8 @@ interface TodoBridge {
   setOpacity: (v: number) => Promise<void>;
   hide: () => Promise<void>;
   minimize: () => Promise<void>;
+  collapse: () => Promise<void>;
+  expand: () => Promise<void>;
   toggleAlwaysOnTop: () => Promise<boolean>;
   settings: () => Promise<SettingsDTO>;
   saveSettings: (input: Record<string, unknown>) => Promise<SettingsDTO>;

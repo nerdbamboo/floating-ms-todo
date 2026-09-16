@@ -229,6 +229,27 @@ function registerIpc() {
   ipcMain.handle('win:minimize', async () => {
     win?.minimize(); // 작업표시줄에는 남음
   });
+  // ---- 미니바: 최소화 대신 작은 바로 접기 ----
+  let prevBounds: Electron.Rectangle | null = null;
+  ipcMain.handle('win:collapse', async () => {
+    if (!win) return;
+    if (!prevBounds) prevBounds = win.getBounds();
+    win.setMinimumSize(200, 40);
+    win.setMaximumSize(600, 44);
+    win.setSize(280, 44, true);
+  });
+  ipcMain.handle('win:expand', async () => {
+    if (!win) return;
+    win.setMaximumSize(0, 0); // 제한 해제 (0 = 무제한)
+    win.setMinimumSize(220, 160);
+    if (prevBounds) {
+      win.setBounds({ x: prevBounds.x, y: prevBounds.y, width: prevBounds.width, height: prevBounds.height }, true);
+      prevBounds = null;
+    } else {
+      win.setSize(Number(process.env.FLOAT_WIDTH ?? 360), Number(process.env.FLOAT_HEIGHT ?? 520), true);
+    }
+    win.focus();
+  });
   ipcMain.handle('win:toggleClickThrough', async (_e, on: boolean) => {
     win?.setIgnoreMouseEvents(on === true, { forward: true });
   });

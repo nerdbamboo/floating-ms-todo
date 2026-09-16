@@ -11,6 +11,8 @@ contextBridge.exposeInMainWorld('todo', {
   setOpacity: (v: number) => ipcRenderer.invoke('win:setOpacity', v),
   hide: () => ipcRenderer.invoke('win:hide'),
   minimize: () => ipcRenderer.invoke('win:minimize'),
+  collapse: () => ipcRenderer.invoke('win:collapse'),
+  expand: () => ipcRenderer.invoke('win:expand'),
   toggleAlwaysOnTop: () => ipcRenderer.invoke('win:toggleAlwaysOnTop'),
   // ---- 설정/로그인 ----
   settings: () => ipcRenderer.invoke('settings:get'),

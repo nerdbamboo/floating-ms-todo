@@ -19,6 +19,7 @@ export function App() {
   const [opacity, setOpacity] = useState(0.95);
   const [busy, setBusy] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [mini, setMini] = useState(false);
 
   const refresh = useCallback(async () => {
     const b = bridge();
@@ -76,9 +77,38 @@ export function App() {
     await refresh();
   };
 
+  const onCollapse = async () => {
+    try {
+      await bridge()?.collapse();
+      setMini(true);
+    } catch (e) {
+      setReply(`접기 실패: ${e instanceof Error ? e.message : String(e)}`);
+    }
+  };
+
+  const onExpand = async () => {
+    try {
+      await bridge()?.expand();
+    } finally {
+      setMini(false);
+    }
+  };
+
   const openMsLoginHint = () => {
     setShowSettings(true);
   };
+
+  if (mini) {
+    const open = tasks.filter((t) => !t.isCompleted);
+    return (
+      <div className="mini-bar" onClick={onExpand} title="클릭해서 펼치기">
+        <span className="mini-dot">☁️</span>
+        <span className="mini-count">☐ {open.length}</span>
+        <span className="mini-next">{open[0]?.title ?? '완료!'}</span>
+        <span className="mini-x" onClick={(e) => { e.stopPropagation(); bridge()?.hide(); }} title="숨기기">×</span>
+      </div>
+    );
+  }
 
   return (
     <div className="float-card">
@@ -86,7 +116,7 @@ export function App() {
         <span>☁️ Floating To Do</span>
         <div className="btns">
           <button title="MS 연결 안내" onClick={openMsLoginHint}>⚙</button>
-          <button title="최소화 (작업표시줄에 유지)" onClick={() => bridge()?.minimize()}>—</button>
+          <button title="미니바로 접기 (작은 바 유지)" onClick={onCollapse}>—</button>
         </div>
       </div>
       <div className="body">

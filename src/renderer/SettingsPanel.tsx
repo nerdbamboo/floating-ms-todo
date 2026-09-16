@@ -74,8 +74,10 @@ export function SettingsPanel({ onClose, onSaved }: { onClose: () => void; onSav
     const b = bridge();
     if (!b) return;
     setBusy(true);
-    setMsg('브라우저가 열리면 로그인하세요…');
     try {
+      // 로그인 전에 현재 폼을 먼저 저장 → 백엔드 즉시 전환 (저장 깜빡함 방지)
+      await ensureMsSaved();
+      setMsg('브라우저가 열리면 로그인하세요…');
       const r = await b.loginInteractive();
       setMsg(`로그인됨: ${r.username}`);
     } catch (e) {
@@ -89,8 +91,9 @@ export function SettingsPanel({ onClose, onSaved }: { onClose: () => void; onSav
     const b = bridge();
     if (!b) return;
     setBusy(true);
-    setMsg('코드 발급 중…');
     try {
+      await ensureMsSaved();
+      setMsg('코드 발급 중…');
       const info = await b.loginDevice();
       setCode(info);
       setMsg('아래 코드를 브라우저에 입력하세요.');
@@ -99,6 +102,18 @@ export function SettingsPanel({ onClose, onSaved }: { onClose: () => void; onSav
     } finally {
       setBusy(false);
     }
+  };
+
+  /** MS 로그인 전제조건: mstodo + Client ID, 현재 폼 자동 저장 */
+  const ensureMsSaved = async () => {
+    const b = bridge();
+    if (!b) throw new Error('Electron에서 실행하세요.');
+    if (f.todoBackend !== 'mstodo') throw new Error('백엔드를 Microsoft To Do로 바꾸세요.');
+    if (!f.azureClientId.trim()) throw new Error('Client ID를 먼저 입력하세요. (Entra 앱 등록)');
+    const d = await b.saveSettings({ ...f, llmApiKey: f.llmApiKey || undefined });
+    setDto(d);
+    setF((p) => ({ ...p, llmApiKey: '' }));
+    onSaved();
   };
 
   const doLogout = async () => {
