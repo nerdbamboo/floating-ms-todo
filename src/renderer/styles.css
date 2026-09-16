@@ -1,0 +1,67 @@
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; margin: 0; }
+body {
+  font-family: 'Segoe UI', 'Noto Sans KR', system-ui, sans-serif;
+  background: transparent;
+  color: #1a1a1a;
+  user-select: none;
+  overflow: hidden;
+}
+.float-card {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-radius: 14px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+}
+.titlebar {
+  -webkit-app-region: drag;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 10px;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+}
+.titlebar .btns { -webkit-app-region: no-drag; margin-left: auto; display: flex; gap: 4px; }
+.titlebar button {
+  border: none; background: rgba(255,255,255,.2); color: white;
+  border-radius: 6px; width: 24px; height: 22px; cursor: pointer; font-size: 12px;
+}
+.titlebar button:hover { background: rgba(255,255,255,.35); }
+.body { flex: 1; display: flex; flex-direction: column; padding: 10px; gap: 8px; -webkit-app-region: no-drag; }
+.agent-row { display: flex; gap: 6px; }
+.agent-row input {
+  flex: 1; padding: 8px 10px; border-radius: 8px;
+  border: 1px solid #d4d4d8; font-size: 13px; outline: none;
+}
+.agent-row input:focus { border-color: #2563eb; }
+.agent-row button {
+  padding: 8px 12px; border-radius: 8px; border: none;
+  background: #2563eb; color: white; cursor: pointer; font-size: 13px;
+}
+.add-row { display: flex; gap: 6px; }
+.add-row input {
+  flex: 1; padding: 7px 10px; border-radius: 8px;
+  border: 1px solid #d4d4d8; font-size: 13px;
+}
+.task-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; }
+.task {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 10px; border-radius: 8px; background: #f8fafc;
+  border: 1px solid #e2e8f0; font-size: 13px;
+}
+.task.done { opacity: 0.6; }
+.task.done .t { text-decoration: line-through; }
+.task .t { flex: 1; cursor: pointer; }
+.task .due { font-size: 11px; color: #64748b; }
+.task button { border: none; background: none; cursor: pointer; font-size: 14px; }
+.reply { font-size: 12px; color: #475569; background: #f1f5f9; padding: 6px 8px; border-radius: 8px; min-height: 20px; }
+.footer { display: flex; align-items: center; gap: 8px; font-size: 11px; color: #64748b; }
+.footer input[type='range'] { flex: 1; }

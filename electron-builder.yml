@@ -1,0 +1,20 @@
+appId: com.floatingtodo.app
+productName: Floating To Do
+directories:
+  output: dist
+  buildResources: assets
+files:
+  - out/**/*
+  - package.json
+win:
+  target:
+    - nsis
+    - portable
+linux:
+  target:
+    - AppImage
+    - deb
+  category: Utility
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true

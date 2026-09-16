@@ -1,0 +1,28 @@
+# deps
+node_modules/
+out/
+dist/
+
+# electron-builder
+*.blockmap
+
+# env / secrets — 절대 커밋 금지
+.env
+.env.local
+*.pem
+msal-cache.json
+app-data/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea/
+
+# logs
+*.log
+npm-debug.log*
