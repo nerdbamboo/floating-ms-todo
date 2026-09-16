@@ -30,11 +30,21 @@ npm run typecheck      # 타입 체크
 npm run build          # 빌드
 ```
 
-배포 파일 만들기:
+배포 파일 만들기 (로컬):
 
 ```bash
-npm run dist:win    # Windows: dist/*.exe
-npm run dist:linux  # Linux: dist/*.AppImage, *.deb
+npm run dist:win    # Windows: dist/*.exe (이 PC에서 빌드 가능)
+npm run dist:linux  # Linux: dist/*.AppImage, *.deb (Linux PC 또는 아래 CI 사용)
+```
+
+## 7. 릴리스 (Windows + Linux 실행파일)
+
+리눅스 빌드는 Docker/WSL 없이 이 PC에서 불가 → GitHub Actions가 양 OS 빌드 후 Release에 자동 첨부:
+
+```bash
+git tag v0.1.0
+git push origin v0.1.0
+# Actions → release 워크플로 → Release에 .exe / .AppImage / .deb 첨부됨
 ```
 
 단축키: `Ctrl+Shift+T` 숨기기/보이기.

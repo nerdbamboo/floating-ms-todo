@@ -10,6 +10,8 @@ win:
   target:
     - nsis
     - portable
+  # 서명서 없음 → 서명 도구(winCodeSign) 다운로드 생략 (관리자/심볼릭링크 권한 불필요)
+  signAndEditExecutable: false
 linux:
   target:
     - AppImage
